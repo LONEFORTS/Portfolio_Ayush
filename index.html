@@ -1,897 +1,1660 @@
-<!DOCTYPE html>
+                                                                Engineer, Researcher, and Polymath. First‑principles thinker in AI/ML, Deep Learning, and system architecture.
+               <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ayush Lone · Engineer & Researcher</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet" />
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- D3.js for skill graph -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayush Lone — Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* ===== RESET & BASE ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html {
-            scroll-behavior: smooth;
-        }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #0a0a0a;
-            color: #f0f0f0;
-            line-height: 1.6;
-            display: flex;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        /* ===== GLOBAL COLOR VARIABLES ===== */
+        /* ═══════════════════════════════════════════════════════
+           ROOT VARIABLES — Color Palette
+           White, Black, Blue, Dark Green only
+           ═══════════════════════════════════════════════════════ */
         :root {
-            --bg: #0a0a0a;
-            --text: #f0f0f0;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-tertiary: #1a1a1a;
+            --bg-card: #141414;
+            --text-primary: #ffffff;
             --text-secondary: #a0a0a0;
-            --blue: #1DA1F2;
-            --green: #1a7a3a;
-            --border: #2a2a2a;
-            --card-bg: #141414;
-            --sidebar-width: 260px;
+            --text-muted: #666666;
+            --accent-blue: #3b82f6;
+            --accent-blue-glow: rgba(59, 130, 246, 0.3);
+            --accent-blue-light: #60a5fa;
+            --accent-green: #059669;
+            --accent-green-glow: rgba(5, 150, 105, 0.3);
+            --accent-green-light: #34d399;
+            --border-subtle: #222222;
+            --border-hover: #333333;
+            --font-italic: 'Cormorant Garamond', Georgia, serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-body: 'Inter', -apple-system, sans-serif;
         }
-        a {
-            color: var(--blue);
-            text-decoration: none;
-            transition: 0.2s;
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            line-height: 1.6;
         }
-        a:hover {
-            color: #ffffff;
-        }
-        .serif {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-weight: 600;
-        }
-        /* ===== SIDEBAR (Twitter-style) ===== */
-        .sidebar {
+
+        /* ═══════════════════════════════════════════════════════
+           SCROLLBAR
+           ═══════════════════════════════════════════════════════ */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
+
+        /* ═══════════════════════════════════════════════════════
+           PARTICLE CANVAS — Neural Network Background
+           White dots on black, moving, connecting
+           ═══════════════════════════════════════════════════════ */
+        #particle-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: var(--sidebar-width);
-            height: 100vh;
-            background: var(--bg);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-            overflow-y: auto;
-        }
-        .sidebar .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            color: white;
-            margin-bottom: 2.5rem;
-        }
-        .sidebar .logo .serif {
-            color: var(--blue);
-        }
-        .sidebar nav {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            flex: 1;
-        }
-        .sidebar nav a {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.7rem 1rem;
-            border-radius: 30px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 1rem;
-            transition: 0.2s;
-        }
-        .sidebar nav a i {
-            width: 24px;
-            font-size: 1.2rem;
-            text-align: center;
-        }
-        .sidebar nav a:hover,
-        .sidebar nav a.active {
-            background: rgba(29, 161, 242, 0.1);
-            color: white;
-        }
-        .sidebar nav a.active {
-            color: var(--blue);
-        }
-        .sidebar .social-links {
-            display: flex;
-            gap: 1.2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border);
-            margin-top: auto;
-        }
-        .sidebar .social-links a {
-            color: var(--text-secondary);
-            font-size: 1.4rem;
-            transition: 0.2s;
-        }
-        .sidebar .social-links a:hover {
-            color: white;
-        }
-        /* ===== MAIN CONTENT ===== */
-        .main {
-            margin-left: var(--sidebar-width);
-            flex: 1;
-            padding: 2rem 3rem 4rem;
-            position: relative;
-            z-index: 10;
-        }
-        /* ===== BACKGROUND PARTICLE CANVAS ===== */
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 0;
             pointer-events: none;
         }
-        /* ===== HERO SECTION ===== */
-        .hero {
+
+        /* ═══════════════════════════════════════════════════════
+           NAVIGATION — Twitter-like sticky nav
+           ═══════════════════════════════════════════════════════ */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 56px;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            z-index: 1000;
             display: flex;
             align-items: center;
-            gap: 4rem;
-            min-height: 80vh;
-            padding: 2rem 0;
-            position: relative;
-            z-index: 10;
+            justify-content: space-between;
+            padding: 0 24px;
+            transition: all 0.3s ease;
         }
-        .hero-left {
-            flex: 1;
-        }
-        .hero-left .motto {
-            font-size: 0.9rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--green);
-            margin-bottom: 0.5rem;
-        }
-        .hero-left h1 {
-            font-size: 4.2rem;
-            line-height: 1.05;
-            margin-bottom: 1rem;
-        }
-        .hero-left h1 .serif {
-            color: var(--blue);
-        }
-        .hero-left .sub {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 500px;
-            margin-bottom: 1.5rem;
-        }
-        .hero-left .motto-secondary {
+
+        .nav-logo {
+            font-family: var(--font-mono);
             font-size: 1.1rem;
-            color: var(--text-secondary);
-            border-left: 3px solid var(--green);
-            padding-left: 1.2rem;
-            margin-bottom: 2rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
         }
-        .hero-right {
-            flex: 0 0 300px;
-            aspect-ratio: 3/4;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
+
+        .nav-logo span { color: var(--accent-blue); }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 400;
+            transition: color 0.2s;
             position: relative;
         }
-        .hero-right img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: grayscale(30%);
-            transition: 0.4s;
-        }
-        .hero-right:hover img {
-            filter: grayscale(0%);
-        }
-        /* Cherry blossom tree (overlay on hero) */
-        #tree-canvas {
+
+        .nav-links a::after {
+            content: '';
             position: absolute;
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            opacity: 0.3;
+            bottom: -4px; left: 0;
+            width: 0; height: 2px;
+            background: var(--accent-blue);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-social {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .nav-social a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+            font-family: var(--font-mono);
+        }
+
+        .nav-social a:hover { color: var(--accent-blue); }
+
+        /* ═══════════════════════════════════════════════════════
+           HERO SECTION
+           ═══════════════════════════════════════════════════════ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
             z-index: 1;
+            padding: 80px 24px 40px;
         }
-        /* ===== SECTION COMMON ===== */
-        section {
-            padding: 4rem 0;
-            border-bottom: 1px solid var(--border);
-            position: relative;
-            z-index: 10;
+
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
         }
-        section:last-of-type {
-            border-bottom: none;
+
+        .hero-name {
+            font-family: var(--font-italic);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--text-primary);
+            line-height: 1.1;
+            margin-bottom: 8px;
+            letter-spacing: -2px;
         }
-        .section-header {
-            margin-bottom: 2.5rem;
+
+        .hero-handle {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            color: var(--accent-blue);
+            margin-bottom: 24px;
+            opacity: 0.9;
         }
-        .section-header h2 {
-            font-size: 2.8rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-        }
-        .section-header h2 .serif {
-            color: var(--blue);
-        }
-        .section-header p {
+
+        .hero-motto {
+            font-family: var(--font-italic);
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            font-style: italic;
+            font-weight: 300;
             color: var(--text-secondary);
-            max-width: 600px;
-            margin-top: 0.3rem;
+            margin-bottom: 16px;
+            line-height: 1.5;
         }
-        /* ===== SKILL GRAPH ===== */
-        #skill-graph-container {
-            width: 100%;
-            height: 600px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-            position: relative;
+
+        .hero-motto .highlight {
+            color: var(--accent-green-light);
+            font-weight: 400;
         }
-        #skill-graph-container svg {
-            width: 100%;
-            height: 100%;
+
+        .hero-subtitle {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
         }
-        /* Graph tooltip */
-        .graph-tooltip {
-            position: absolute;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
+
+        .hero-cta {
+            display: inline-flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 9999px;
+            font-family: var(--font-mono);
             font-size: 0.85rem;
             font-weight: 500;
-            pointer-events: none;
-            z-index: 100;
-            backdrop-filter: blur(4px);
-            opacity: 0;
-            transition: 0.1s;
-            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            outline: none;
         }
-        .graph-legend {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
+
+        .btn-primary {
+            background: var(--text-primary);
+            color: var(--bg-primary);
         }
-        .graph-legend i {
-            margin-right: 0.4rem;
+
+        .btn-primary:hover {
+            background: var(--accent-blue);
+            color: var(--text-primary);
+            box-shadow: 0 0 30px var(--accent-blue-glow);
         }
-        /* ===== CERTIFICATIONS ===== */
-        .cert-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-hover);
         }
-        .cert-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+
+        .btn-outline:hover {
+            border-color: var(--accent-green);
+            color: var(--accent-green-light);
+            box-shadow: 0 0 20px var(--accent-green-glow);
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           SECTION STYLING
+           ═══════════════════════════════════════════════════════ */
+        .section {
+            position: relative;
+            z-index: 1;
+            padding: 100px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: var(--font-italic);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-style: italic;
+            font-weight: 300;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 60px;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           ABOUT SECTION — Twitter Profile Card Style
+           ═══════════════════════════════════════════════════════ */
+        .about-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
             overflow: hidden;
-            transition: 0.25s;
-            aspect-ratio: 1/1;
+            max-width: 700px;
+            margin: 0 auto;
+            transition: border-color 0.3s;
+        }
+
+        .about-card:hover { border-color: var(--border-hover); }
+
+        .about-banner {
+            height: 140px;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-green) 100%);
+            opacity: 0.3;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-avatar-wrap {
+            position: relative;
+            margin-top: -50px;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .about-avatar {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            border: 4px solid var(--bg-card);
+            background: var(--bg-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            cursor: default;
+            font-family: var(--font-italic);
+            font-size: 2.5rem;
+            font-style: italic;
+            color: var(--text-primary);
         }
-        .cert-card img {
+
+        .about-follow-btn {
+            padding: 8px 20px;
+            border-radius: 9999px;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .about-follow-btn:hover {
+            background: var(--accent-blue);
+            color: var(--text-primary);
+        }
+
+        .about-info {
+            padding: 16px 24px 24px;
+        }
+
+        .about-name {
+            font-family: var(--font-italic);
+            font-size: 1.5rem;
+            font-style: italic;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .about-handle {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .about-bio {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .about-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .about-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .about-meta .icon {
+            color: var(--accent-blue);
+            font-family: var(--font-mono);
+        }
+
+        .about-stats {
+            display: flex;
+            gap: 24px;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .about-stat {
+            font-size: 0.9rem;
+        }
+
+        .about-stat strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .about-stat span {
+            color: var(--text-muted);
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           NEURAL NETWORK SKILLS — Interactive Canvas
+           Click neuron → shows connections
+           ═══════════════════════════════════════════════════════ */
+        .skills-section {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .skills-canvas-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+        }
+
+        #skills-canvas {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+
+        #skills-canvas:active { cursor: grabbing; }
+
+        .skills-legend {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .legend-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.tech { background: var(--accent-blue); box-shadow: 0 0 10px var(--accent-blue-glow); }
+        .legend-dot.ai { background: var(--accent-green); box-shadow: 0 0 10px var(--accent-green-glow); }
+        .legend-dot.soft { background: var(--text-primary); box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+
+        .skill-tooltip {
+            position: absolute;
+            background: var(--bg-card);
+            border: 1px solid var(--border-hover);
+            border-radius: 8px;
+            padding: 12px 16px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 100;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .skill-tooltip.visible { opacity: 1; }
+
+        .skill-tooltip .tooltip-title {
+            color: var(--accent-blue);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .skill-tooltip .tooltip-connections {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           CHERRY BLOSSOM TREE — Mathematical Fractal Canvas
+           ═══════════════════════════════════════════════════════ */
+        .sakura-section {
+            text-align: center;
+        }
+
+        .sakura-canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+        }
+
+        #sakura-canvas {
+            width: 100%;
+            display: block;
+        }
+
+        .sakura-caption {
+            font-family: var(--font-italic);
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-top: 20px;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           CERTIFICATIONS — Twitter Media Grid Style
+           ═══════════════════════════════════════════════════════ */
+        .certs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .cert-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .cert-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        .cert-image {
+            width: 100%;
+            height: 180px;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .cert-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        .cert-card:hover {
-            border-color: var(--blue);
-            transform: scale(1.02);
+
+        .cert-info {
+            padding: 16px;
         }
-        .cert-card .placeholder {
-            padding: 1rem;
-            text-align: center;
+
+        .cert-title {
+            font-family: var(--font-italic);
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
         }
-        .cert-card .placeholder i {
-            font-size: 3rem;
-            color: var(--blue);
-            margin-bottom: 0.5rem;
-            display: block;
+
+        .cert-issuer {
+            font-size: 0.85rem;
+            color: var(--accent-blue);
+            font-family: var(--font-mono);
         }
-        /* ===== CONTACT ===== */
-        .contact-links {
+
+        .cert-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           PROJECTS — Twitter Timeline Style
+           ═══════════════════════════════════════════════════════ */
+        .projects-timeline {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s;
             display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin-top: 1rem;
+            gap: 16px;
         }
-        .contact-links a {
+
+        .project-card:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-tertiary);
+        }
+
+        .project-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
+            font-family: var(--font-mono);
             font-size: 1.2rem;
+            color: var(--text-primary);
+            flex-shrink: 0;
+        }
+
+        .project-content { flex: 1; }
+
+        .project-title {
+            font-family: var(--font-italic);
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .project-desc {
+            font-size: 0.9rem;
             color: var(--text-secondary);
-            border-bottom: 2px solid transparent;
-            padding-bottom: 0.2rem;
+            margin-bottom: 12px;
         }
-        .contact-links a:hover {
-            color: white;
-            border-bottom-color: var(--blue);
+
+        .project-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1024px) {
-            .hero {
-                flex-direction: column-reverse;
-                gap: 2rem;
-                text-align: center;
-            }
-            .hero-left .sub,
-            .hero-left .motto-secondary {
-                max-width: 100%;
-            }
-            .hero-right {
-                flex: 0 0 200px;
-                width: 200px;
-            }
-            .section-header h2 {
-                font-size: 2.2rem;
-            }
+
+        .project-tag {
+            padding: 4px 12px;
+            border-radius: 9999px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--accent-blue-light);
         }
+
+        .project-links {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .project-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-family: var(--font-mono);
+            transition: color 0.2s;
+        }
+
+        .project-links a:hover { color: var(--accent-green-light); }
+
+        /* ═══════════════════════════════════════════════════════
+           CONTACT SECTION
+           ═══════════════════════════════════════════════════════ */
+        .contact-section {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .contact-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .contact-icon {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: var(--accent-blue);
+        }
+
+        .contact-label {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .contact-value {
+            font-family: var(--font-italic);
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════════════ */
+        .footer {
+            text-align: center;
+            padding: 40px 24px;
+            border-top: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+        }
+
+        .footer-motto {
+            font-family: var(--font-italic);
+            font-style: italic;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════════════════ */
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-                flex-direction: row;
-                padding: 0.8rem 1.5rem;
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-            .sidebar .logo {
-                font-size: 1.2rem;
-                margin-bottom: 0;
-                flex: 1;
-            }
-            .sidebar nav {
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: 0.3rem;
-                flex: 1;
-                justify-content: flex-end;
-            }
-            .sidebar nav a {
-                padding: 0.3rem 0.8rem;
-                font-size: 0.85rem;
-                gap: 0.3rem;
-            }
-            .sidebar nav a i {
-                font-size: 1rem;
-                width: auto;
-            }
-            .sidebar .social-links {
-                display: none;
-            }
-            .main {
-                margin-left: 0;
-                padding: 1.5rem;
-            }
-            .hero-left h1 {
-                font-size: 3rem;
-            }
-            #skill-graph-container {
-                height: 400px;
-            }
+            .nav-links { display: none; }
+            .hero { padding-top: 72px; }
+            .skills-canvas-container { height: 400px; }
+            .about-stats { flex-wrap: wrap; }
+            .project-card { flex-direction: column; }
         }
-        @media (max-width: 480px) {
-            .sidebar nav a span {
-                display: none;
-            }
-            .hero-left h1 {
-                font-size: 2.4rem;
-            }
-            .hero-right {
-                flex: 0 0 160px;
-                width: 160px;
-            }
+
+        /* ═══════════════════════════════════════════════════════
+           ANIMATIONS
+           ═══════════════════════════════════════════════════════ */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        /* ===== UTILITIES ===== */
-        .text-green {
-            color: var(--green);
+
+        .fade-in {
+            animation: fadeInUp 0.8s ease forwards;
+            opacity: 0;
         }
-        .text-blue {
-            color: var(--blue);
-        }
-        .mt-2 {
-            margin-top: 1.5rem;
-        }
-        .hidden {
-            display: none !important;
-        }
+
+        .fade-in-delay-1 { animation-delay: 0.1s; }
+        .fade-in-delay-2 { animation-delay: 0.2s; }
+        .fade-in-delay-3 { animation-delay: 0.3s; }
+        .fade-in-delay-4 { animation-delay: 0.4s; }
     </style>
 </head>
 <body>
-    <!-- Background Neural Network Particles -->
-    <canvas id="bg-canvas"></canvas>
 
-    <!-- Sidebar (Twitter-style) -->
-    <aside class="sidebar">
-        <div class="logo">
-            AYUSH <span class="serif">LONE</span>
-        </div>
-        <nav>
-            <a href="#hero" class="active"><i class="fas fa-home"></i><span>Home</span></a>
-            <a href="#skills"><i class="fas fa-code"></i><span>Skills</span></a>
-            <a href="#certifications"><i class="fas fa-certificate"></i><span>Certifications</span></a>
-            <a href="#contact"><i class="fas fa-envelope"></i><span>Contact</span></a>
-        </nav>
-        <div class="social-links">
-            <a href="https://github.com/LONEFORTS" target="_blank"><i class="fab fa-github"></i></a>
-            <a href="https://www.linkedin.com/in/ayush-lone-b017a2342" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-        </div>
-    </aside>
+    <!-- ═══════════════════════════════════════════════════════
+         PARTICLE BACKGROUND — Neural Network White Dots
+         ═══════════════════════════════════════════════════════ -->
+    <canvas id="particle-canvas"></canvas>
 
-    <!-- Main Content -->
-    <main class="main">
-        <!-- ===== HERO ===== -->
-        <section id="hero" class="hero">
-            <div class="hero-left">
-                <p class="motto">Cooperation over Competition</p>
-                <h1>Ayush <span class="serif">Lone</span></h1>
-                <p class="sub">Computer Engineering · Y.B. Patil Polytechnic</p>
-                <div class="motto-secondary">
-                    “Not to Consume it — but to Build it.”
-                </div>
-                <p style="color: var(--text-secondary); max-width: 450px;">
-                    Engineer, Researcher, and Polymath. First‑principles thinker in AI/ML, Deep Learning, and system architecture.
+    <!-- ═══════════════════════════════════════════════════════
+         NAVIGATION
+         ═══════════════════════════════════════════════════════ -->
+    <nav class="nav-bar">
+        <a href="#" class="nav-logo">LONE<span>FORTS</span></a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#sakura">Sakura</a></li>
+            <li><a href="#certs">Certs</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="nav-social">
+            <a href="https://github.com/LONEFORTS" target="_blank">GH</a>
+            <a href="https://linkedin.com/in/ayush-lone" target="_blank">LI</a>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════════════════
+         HERO SECTION
+         ═══════════════════════════════════════════════════════ -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-name fade-in">Ayush Lone</h1>
+            <p class="hero-handle fade-in fade-in-delay-1">@LONEFORTS</p>
+            <p class="hero-motto fade-in fade-in-delay-2">
+                "Cooperation over Competition.<br>
+                <span class="highlight">Not to Consume it — but to Build it.</span>"
+            </p>
+            <p class="hero-subtitle fade-in fade-in-delay-3">
+                Computer Engineering Student @ Y.B. Patil Polytechnic<br>
+                Building bridges between code, AI, and human connection.
+            </p>
+            <div class="hero-cta fade-in fade-in-delay-4">
+                <a href="#projects" class="btn btn-primary">View My Work</a>
+                <a href="#contact" class="btn btn-outline">Get In Touch</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         ABOUT SECTION — Twitter Profile Card
+         ═══════════════════════════════════════════════════════ -->
+    <section class="section" id="about">
+        <h2 class="section-title">About Me</h2>
+        <p class="section-subtitle">The mind behind the code.</p>
+
+        <div class="about-card">
+            <div class="about-banner"></div>
+            <div class="about-avatar-wrap">
+                <div class="about-avatar">AL</div>
+                <button class="about-follow-btn" onclick="window.open('https://github.com/LONEFORTS','_blank')">Follow</button>
+            </div>
+            <div class="about-info">
+                <div class="about-name">Ayush Lone</div>
+                <div class="about-handle">@LONEFORTS · Computer Engineering</div>
+                <p class="about-bio">
+                    Diploma student in Computer Engineering at Y.B. Patil Polytechnic, Akurdi, Pune. 
+                    Passionate about AI, Machine Learning, and building meaningful technology. 
+                    Believer in cooperation over competition. I don't just consume tech — I build it.
                 </p>
+                <div class="about-meta">
+                    <span><span class="icon">📍</span> Pune, Maharashtra, India</span>
+                    <span><span class="icon">🎓</span> Y.B. Patil Polytechnic</span>
+                    <span><span class="icon">🔗</span> github.com/LONEFORTS</span>
+                    <span><span class="icon">💼</span> Open to Opportunities</span>
+                </div>
             </div>
-            <div class="hero-right">
-                <!-- Your profile image – replace hero.jpg -->
-                <img src="assets/images/hero.jpg" alt="Ayush Lone" />
-                <!-- Cherry blossom tree overlay (Canvas) -->
-                <canvas id="tree-canvas"></canvas>
+            <div class="about-stats">
+                <div class="about-stat"><strong>12+</strong> <span>Projects</span></div>
+                <div class="about-stat"><strong>8+</strong> <span>Certifications</span></div>
+                <div class="about-stat"><strong>5+</strong> <span>Tech Stacks</span></div>
+                <div class="about-stat"><strong>∞</strong> <span>Curiosity</span></div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- ===== SKILLS GRAPH ===== -->
-        <section id="skills">
-            <div class="section-header">
-                <h2>Technical <span class="serif">Arsenal</span></h2>
-                <p>Click any skill node to reveal its connections.</p>
-            </div>
-            <div id="skill-graph-container">
-                <!-- D3 will inject SVG here -->
-            </div>
-            <div class="graph-legend">
-                <span><i class="fas fa-circle" style="color: var(--blue);"></i> Node — Skill</span>
-                <span><i class="fas fa-link" style="color: var(--green);"></i> Edge — Relationship</span>
-                <span><i class="fas fa-mouse-pointer"></i> Click to highlight</span>
-            </div>
-        </section>
+    <!-- ═══════════════════════════════════════════════════════
+         SKILLS NEURAL NETWORK — Interactive Canvas
+         ═══════════════════════════════════════════════════════ -->
+    <section class="section skills-section" id="skills">
+        <h2 class="section-title">Neural Network of Skills</h2>
+        <p class="section-subtitle">Click any neuron to see its connections. Drag to explore.</p>
 
-        <!-- ===== CERTIFICATIONS ===== -->
-        <section id="certifications">
-            <div class="section-header">
-                <h2>Certifications <span class="serif">&amp; Achievements</span></h2>
-                <p>Continuous learning and validation of skills.</p>
+        <div class="skills-canvas-container">
+            <canvas id="skills-canvas"></canvas>
+            <div class="skill-tooltip" id="skill-tooltip">
+                <div class="tooltip-title" id="tooltip-title"></div>
+                <div class="tooltip-connections" id="tooltip-connections"></div>
             </div>
-            <div class="cert-grid" id="cert-grid">
-                <!-- Placeholder cards – replace src with your certificate images -->
-                <div class="cert-card"><div class="placeholder"><i class="fas fa-image"></i>Cert 1</div></div>
-                <div class="cert-card"><div class="placeholder"><i class="fas fa-image"></i>Cert 2</div></div>
-                <div class="cert-card"><div class="placeholder"><i class="fas fa-image"></i>Cert 3</div></div>
-                <div class="cert-card"><div class="placeholder"><i class="fas fa-image"></i>Cert 4</div></div>
+        </div>
+
+        <div class="skills-legend">
+            <div class="legend-item"><div class="legend-dot tech"></div>Programming</div>
+            <div class="legend-item"><div class="legend-dot ai"></div>AI / ML</div>
+            <div class="legend-item"><div class="legend-dot soft"></div>Soft Skills</div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         CHERRY BLOSSOM — Mathematical Fractal Tree
+         ═══════════════════════════════════════════════════════ -->
+    <section class="section sakura-section" id="sakura">
+        <h2 class="section-title">Sakura — Growth in Code</h2>
+        <p class="section-subtitle">A mathematically generated cherry blossom tree. Every branch is an algorithm.</p>
+
+        <div class="sakura-canvas-container">
+            <canvas id="sakura-canvas" width="800" height="600"></canvas>
+        </div>
+        <p class="sakura-caption">"Like a tree, I grow — branch by branch, commit by commit."</p>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         CERTIFICATIONS — Grid Layout
+         ═══════════════════════════════════════════════════════ -->
+    <section class="section" id="certs">
+        <h2 class="section-title">Certifications</h2>
+        <p class="section-subtitle">Credentials that validate the journey.</p>
+
+        <div class="certs-grid">
+            <!-- Replace src with your actual certification image paths -->
+            <div class="cert-card">
+                <div class="cert-image">
+                    <span>[Upload: Python Cert Image]</span>
+                </div>
+                <div class="cert-info">
+                    <div class="cert-title">Python Programming</div>
+                    <div class="cert-issuer">Platform Name</div>
+                    <div class="cert-date">2024</div>
+                </div>
             </div>
-            <!-- You can replace the placeholders with <img src="assets/images/cert1.jpg"> etc. -->
-        </section>
-
-        <!-- ===== CONTACT ===== -->
-        <section id="contact">
-            <div class="section-header">
-                <h2>Get in <span class="serif">Touch</span></h2>
-                <p>Open for research collaborations, speaking, and engineering roles.</p>
+            <div class="cert-card">
+                <div class="cert-image">
+                    <span>[Upload: ML Cert Image]</span>
+                </div>
+                <div class="cert-info">
+                    <div class="cert-title">Machine Learning Fundamentals</div>
+                    <div class="cert-issuer">Platform Name</div>
+                    <div class="cert-date">2024</div>
+                </div>
             </div>
-            <div class="contact-links">
-                <a href="mailto:ayush.lone@ybpatilpolytechnic.ac.in"><i class="fas fa-envelope"></i> ayush.lone@ybpatilpolytechnic.ac.in</a>
-                <a href="https://www.linkedin.com/in/ayush-lone-b017a2342" target="_blank"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
-                <a href="https://github.com/LONEFORTS" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+            <div class="cert-card">
+                <div class="cert-image">
+                    <span>[Upload: Web Dev Cert Image]</span>
+                </div>
+                <div class="cert-info">
+                    <div class="cert-title">Web Development</div>
+                    <div class="cert-issuer">Platform Name</div>
+                    <div class="cert-date">2024</div>
+                </div>
             </div>
-        </section>
+            <div class="cert-card">
+                <div class="cert-image">
+                    <span>[Upload: AI Cert Image]</span>
+                </div>
+                <div class="cert-info">
+                    <div class="cert-title">Artificial Intelligence</div>
+                    <div class="cert-issuer">Platform Name</div>
+                    <div class="cert-date">2024</div>
+                </div>
+            </div>
+            <div class="cert-card">
+                <div class="cert-image">
+                    <span>[Upload: Leadership Cert Image]</span>
+                </div>
+                <div class="cert-info">
+                    <div class="cert-title">Leadership & Communication</div>
+                    <div class="cert-issuer">Platform Name</div>
+                    <div class="cert-date">2024</div>
+                </div>
+            </div>
+            <div class="cert-card">
+                <div class="cert-image">
+                    <span>[Upload: Additional Cert]</span>
+                </div>
+                <div class="cert-info">
+                    <div class="cert-title">Additional Certification</div>
+                    <div class="cert-issuer">Platform Name</div>
+                    <div class="cert-date">2024</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <footer style="padding: 2rem 0 0; border-top: 1px solid var(--border); margin-top: 2rem; color: var(--text-secondary); font-size: 0.9rem; text-align: center;">
-            &copy; 2025 Ayush Lone — Built with <i class="fas fa-heart" style="color: var(--blue);"></i> and first‑principles.
-        </footer>
-    </main>
+    <!-- ═══════════════════════════════════════════════════════
+         PROJECTS — Twitter Timeline Style
+         ═══════════════════════════════════════════════════════ -->
+    <section class="section" id="projects">
+        <h2 class="section-title">Projects</h2>
+        <p class="section-subtitle">Code that solves real problems.</p>
 
-    <!-- ===== SCRIPTS ===== -->
+        <div class="projects-timeline">
+            <div class="project-card">
+                <div class="project-icon">Py</div>
+                <div class="project-content">
+                    <div class="project-title">AI-Powered Project</div>
+                    <div class="project-desc">Description of your AI/ML project. What problem it solves, what tech you used, and the impact it had.</div>
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">TensorFlow</span>
+                        <span class="project-tag">Machine Learning</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#">View Code →</a>
+                        <a href="#">Live Demo →</a>
+                    </div>
+                </div>
+            </div>
 
-    <!-- 1. Background Neural Network Particles -->
+            <div class="project-card">
+                <div class="project-icon">Go</div>
+                <div class="project-content">
+                    <div class="project-title">GoLang Backend System</div>
+                    <div class="project-desc">A high-performance backend service built with Go. Handles concurrent requests with goroutines and channels.</div>
+                    <div class="project-tags">
+                        <span class="project-tag">Go</span>
+                        <span class="project-tag">REST API</span>
+                        <span class="project-tag">PostgreSQL</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#">View Code →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">JS</div>
+                <div class="project-content">
+                    <div class="project-title">Full-Stack Web Application</div>
+                    <div class="project-desc">A modern web app with responsive design, real-time features, and seamless user experience.</div>
+                    <div class="project-tags">
+                        <span class="project-tag">JavaScript</span>
+                        <span class="project-tag">HTML/CSS</span>
+                        <span class="project-tag">Node.js</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#">View Code →</a>
+                        <a href="#">Live Demo →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">C</div>
+                <div class="project-content">
+                    <div class="project-title">Systems Programming</div>
+                    <div class="project-desc">Low-level system utility or algorithm implementation in C. Optimized for performance and memory efficiency.</div>
+                    <div class="project-tags">
+                        <span class="project-tag">C</span>
+                        <span class="project-tag">Algorithms</span>
+                        <span class="project-tag">Data Structures</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#">View Code →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         CONTACT
+         ═══════════════════════════════════════════════════════ -->
+    <section class="section contact-section" id="contact">
+        <h2 class="section-title">Let's Connect</h2>
+        <p class="section-subtitle">Cooperation starts with a conversation.</p>
+
+        <div class="contact-grid">
+            <a href="https://github.com/LONEFORTS" target="_blank" class="contact-card">
+                <div class="contact-icon">⚡</div>
+                <div class="contact-label">GitHub</div>
+                <div class="contact-value">@LONEFORTS</div>
+            </a>
+            <a href="https://linkedin.com/in/ayush-lone" target="_blank" class="contact-card">
+                <div class="contact-icon">🔗</div>
+                <div class="contact-label">LinkedIn</div>
+                <div class="contact-value">Ayush Lone</div>
+            </a>
+            <a href="mailto:your.email@example.com" class="contact-card">
+                <div class="contact-icon">✉</div>
+                <div class="contact-label">Email</div>
+                <div class="contact-value">your.email@example.com</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         FOOTER
+         ═══════════════════════════════════════════════════════ -->
+    <footer class="footer">
+        <p class="footer-motto">"Not to Consume it — but to Build it."</p>
+        <p>Built with code, curiosity, and cherry blossoms. © 2024 Ayush Lone.</p>
+    </footer>
+
+    <!-- ═══════════════════════════════════════════════════════
+         JAVASCRIPT — All Interactive Systems
+         ═══════════════════════════════════════════════════════ -->
     <script>
-        (function() {
-            const canvas = document.getElementById('bg-canvas');
-            const ctx = canvas.getContext('2d');
-            let width, height;
-            let particles = [];
-            const numParticles = 120;
-            const maxDist = 180;
+    // ═══════════════════════════════════════════════════════════
+    // 1. PARTICLE BACKGROUND — White Dots Neural Network
+    // ═══════════════════════════════════════════════════════════
+    (function() {
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const PARTICLE_COUNT = 80;
+        const CONNECTION_DISTANCE = 120;
+        const MOUSE_DISTANCE = 150;
+        let mouse = { x: null, y: null };
 
-            function resize() {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        window.addEventListener('mouseleave', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+                this.opacity = Math.random() * 0.5 + 0.3;
             }
-            window.addEventListener('resize', resize);
-            resize();
 
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * width;
-                    this.y = Math.random() * height;
-                    this.vx = (Math.random() - 0.5) * 0.4;
-                    this.vy = (Math.random() - 0.5) * 0.4;
-                    this.radius = Math.random() * 1.8 + 0.5;
-                    this.opacity = Math.random() * 0.5 + 0.2;
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                // Mouse repulsion
+                if (mouse.x !== null) {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < MOUSE_DISTANCE) {
+                        const force = (MOUSE_DISTANCE - dist) / MOUSE_DISTANCE;
+                        this.vx -= (dx / dist) * force * 0.02;
+                        this.vy -= (dy / dist) * force * 0.02;
+                    }
                 }
-                update() {
-                    this.x += this.vx;
-                    this.y += this.vy;
-                    if (this.x < 0 || this.x > width) this.vx *= -1;
-                    if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push(new Particle());
+        }
+
+        function drawConnections() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < CONNECTION_DISTANCE) {
+                        const opacity = (1 - dist / CONNECTION_DISTANCE) * 0.15;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
                 }
-                draw() {
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            drawConnections();
+            requestAnimationFrame(animate);
+        }
+        animate();
+    })();
+
+    // ═══════════════════════════════════════════════════════════
+    // 2. SKILLS NEURAL NETWORK — Interactive Force-Directed Graph
+    // Click neuron → highlight connections
+    // ═══════════════════════════════════════════════════════════
+    (function() {
+        const canvas = document.getElementById('skills-canvas');
+        const ctx = canvas.getContext('2d');
+        const tooltip = document.getElementById('skill-tooltip');
+        const tooltipTitle = document.getElementById('tooltip-title');
+        const tooltipConnections = document.getElementById('tooltip-connections');
+        const container = canvas.parentElement;
+
+        function resizeSkills() {
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+        }
+        resizeSkills();
+        window.addEventListener('resize', resizeSkills);
+
+        // Skill nodes with categories and connections
+        const skillsData = [
+            // Programming Core
+            { id: 'python', label: 'Python', category: 'tech', x: 0.3, y: 0.3, level: 5 },
+            { id: 'c', label: 'C', category: 'tech', x: 0.2, y: 0.5, level: 4 },
+            { id: 'golang', label: 'GoLang', category: 'tech', x: 0.25, y: 0.7, level: 3 },
+            { id: 'java', label: 'Java', category: 'tech', x: 0.4, y: 0.4, level: 4 },
+            { id: 'js', label: 'JavaScript', category: 'tech', x: 0.5, y: 0.6, level: 4 },
+            { id: 'html', label: 'HTML', category: 'tech', x: 0.45, y: 0.75, level: 5 },
+            { id: 'css', label: 'CSS', category: 'tech', x: 0.55, y: 0.75, level: 5 },
+
+            // AI / ML
+            { id: 'ml', label: 'Machine Learning', category: 'ai', x: 0.65, y: 0.25, level: 4 },
+            { id: 'ai', label: 'AI', category: 'ai', x: 0.75, y: 0.35, level: 4 },
+            { id: 'dl', label: 'Deep Learning', category: 'ai', x: 0.8, y: 0.2, level: 3 },
+            { id: 'dl2', label: 'Neural Nets', category: 'ai', x: 0.7, y: 0.15, level: 3 },
+
+            // Soft Skills
+            { id: 'leadership', label: 'Leadership', category: 'soft', x: 0.15, y: 0.25, level: 4 },
+            { id: 'comm', label: 'Communication', category: 'soft', x: 0.1, y: 0.4, level: 5 },
+            { id: 'public', label: 'Public Affairs', category: 'soft', x: 0.08, y: 0.6, level: 3 },
+            { id: 'intl', label: 'Int'l Affairs', category: 'soft', x: 0.12, y: 0.75, level: 3 },
+        ];
+
+        // Connection weights define relationships
+        const connections = [
+            // Python connects to everything AI
+            ['python', 'ml'], ['python', 'ai'], ['python', 'dl'], ['python', 'dl2'],
+            ['python', 'js'], ['python', 'java'],
+            // C connects to systems
+            ['c', 'golang'], ['c', 'java'],
+            // Web stack
+            ['html', 'css'], ['html', 'js'], ['css', 'js'],
+            ['js', 'java'],
+            // AI cluster
+            ['ml', 'ai'], ['ai', 'dl'], ['dl', 'dl2'], ['ml', 'dl'],
+            // Soft skills bridge
+            ['leadership', 'comm'], ['comm', 'public'], ['public', 'intl'],
+            ['leadership', 'python'], ['comm', 'js'],
+            ['ai', 'leadership'],
+        ];
+
+        let nodes = skillsData.map(s => ({
+            ...s,
+            x: s.x * canvas.width,
+            y: s.y * canvas.height,
+            vx: 0, vy: 0,
+            radius: 8 + s.level * 3,
+            hovered: false,
+            selected: false,
+            pulse: 0
+        }));
+
+        let selectedNode = null;
+        let isDragging = false;
+        let dragNode = null;
+
+        function getConnected(nodeId) {
+            const connected = new Set();
+            connections.forEach(([a, b]) => {
+                if (a === nodeId) connected.add(b);
+                if (b === nodeId) connected.add(a);
+            });
+            return connected;
+        }
+
+        function getCategoryColor(cat) {
+            if (cat === 'tech') return '#3b82f6';
+            if (cat === 'ai') return '#059669';
+            return '#ffffff';
+        }
+
+        function getCategoryGlow(cat) {
+            if (cat === 'tech') return 'rgba(59, 130, 246, 0.4)';
+            if (cat === 'ai') return 'rgba(5, 150, 105, 0.4)';
+            return 'rgba(255, 255, 255, 0.2)';
+        }
+
+        function updatePhysics() {
+            // Repulsion
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[j].x - nodes[i].x;
+                    const dy = nodes[j].y - nodes[i].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                    if (dist < 150) {
+                        const force = (150 - dist) / 150 * 0.5;
+                        const fx = (dx / dist) * force;
+                        const fy = (dy / dist) * force;
+                        nodes[i].vx -= fx; nodes[i].vy -= fy;
+                        nodes[j].vx += fx; nodes[j].vy += fy;
+                    }
+                }
+            }
+
+            // Attraction along connections
+            connections.forEach(([aId, bId]) => {
+                const a = nodes.find(n => n.id === aId);
+                const b = nodes.find(n => n.id === bId);
+                if (!a || !b) return;
+                const dx = b.x - a.x;
+                const dy = b.y - a.y;
+                const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                const force = (dist - 120) / dist * 0.03;
+                a.vx += dx * force; a.vy += dy * force;
+                b.vx -= dx * force; b.vy -= dy * force;
+            });
+
+            // Center gravity
+            nodes.forEach(n => {
+                n.vx += (canvas.width / 2 - n.x) * 0.0005;
+                n.vy += (canvas.height / 2 - n.y) * 0.0005;
+                n.vx *= 0.9; n.vy *= 0.9;
+                if (!isDragging || n !== dragNode) {
+                    n.x += n.vx; n.y += n.vy;
+                }
+                n.x = Math.max(30, Math.min(canvas.width - 30, n.x));
+                n.y = Math.max(30, Math.min(canvas.height - 30, n.y));
+                n.pulse += 0.03;
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const connectedSet = selectedNode ? getConnected(selectedNode.id) : new Set();
+
+            // Draw connections
+            connections.forEach(([aId, bId]) => {
+                const a = nodes.find(n => n.id === aId);
+                const b = nodes.find(n => n.id === bId);
+                if (!a || !b) return;
+
+                let alpha = 0.08;
+                let width = 0.5;
+
+                if (selectedNode) {
+                    const isConnected = (a.id === selectedNode.id && connectedSet.has(b.id)) ||
+                                        (b.id === selectedNode.id && connectedSet.has(a.id));
+                    if (isConnected) {
+                        alpha = 0.6;
+                        width = 2;
+                    } else if (a.id !== selectedNode.id && b.id !== selectedNode.id) {
+                        alpha = 0.02;
+                    }
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+                ctx.lineWidth = width;
+                ctx.stroke();
+
+                // Animated pulse on active connections
+                if (selectedNode && alpha > 0.5) {
+                    const t = (Date.now() % 2000) / 2000;
+                    const px = a.x + (b.x - a.x) * t;
+                    const py = a.y + (b.y - a.y) * t;
                     ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255,255,255,${this.opacity})`;
+                    ctx.arc(px, py, 3, 0, Math.PI * 2);
+                    ctx.fillStyle = getCategoryColor(selectedNode.category);
                     ctx.fill();
                 }
-            }
-
-            for (let i = 0; i < numParticles; i++) {
-                particles.push(new Particle());
-            }
-
-            function drawLines() {
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i + 1; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < maxDist) {
-                            const alpha = (1 - dist / maxDist) * 0.3;
-                            ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
-                            ctx.lineWidth = 0.5;
-                            ctx.beginPath();
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-            }
-
-            function animate() {
-                ctx.clearRect(0, 0, width, height);
-                particles.forEach(p => { p.update(); p.draw(); });
-                drawLines();
-                requestAnimationFrame(animate);
-            }
-            animate();
-        })();
-    </script>
-
-    <!-- 2. Cherry Blossom Tree (mathematical fractal) -->
-    <script>
-        (function() {
-            const canvas = document.getElementById('tree-canvas');
-            const ctx = canvas.getContext('2d');
-            let width, height;
-
-            function resizeTree() {
-                const rect = canvas.parentElement.getBoundingClientRect();
-                canvas.width = rect.width;
-                canvas.height = rect.height;
-                width = canvas.width;
-                height = canvas.height;
-                drawTree();
-            }
-
-            function drawTree() {
-                ctx.clearRect(0, 0, width, height);
-                const startX = width * 0.8;
-                const startY = height * 0.95;
-                const length = Math.min(width, height) * 0.15;
-                const angle = -Math.PI / 2;
-                const branchFactor = 0.7;
-                const maxDepth = 7;
-
-                function branch(x, y, len, ang, depth) {
-                    if (depth > maxDepth || len < 2) return;
-
-                    const endX = x + len * Math.cos(ang);
-                    const endY = y + len * Math.sin(ang);
-
-                    // Draw branch
-                    ctx.beginPath();
-                    ctx.moveTo(x, y);
-                    ctx.lineTo(endX, endY);
-                    ctx.strokeStyle = depth < 3 ? '#3d2314' : '#6b4c3b';
-                    ctx.lineWidth = Math.max(1, len * 0.12);
-                    ctx.stroke();
-
-                    // Draw cherry blossom petals at ends
-                    if (depth > 4) {
-                        const petalSize = len * 0.3 + 2;
-                        const hue = 340 + Math.random() * 20;
-                        ctx.beginPath();
-                        ctx.arc(endX, endY, petalSize, 0, Math.PI * 2);
-                        ctx.fillStyle = `hsla(${hue}, 80%, 70%, 0.5)`;
-                        ctx.fill();
-                        // additional petals
-                        for (let p = 0; p < 3; p++) {
-                            const a = ang + (p - 1) * 0.8;
-                            const px = endX + petalSize * 0.6 * Math.cos(a);
-                            const py = endY + petalSize * 0.6 * Math.sin(a);
-                            ctx.beginPath();
-                            ctx.arc(px, py, petalSize * 0.7, 0, Math.PI * 2);
-                            ctx.fillStyle = `hsla(${hue + 10}, 70%, 75%, 0.3)`;
-                            ctx.fill();
-                        }
-                    }
-
-                    // Recursive branches
-                    const newLen = len * branchFactor;
-                    const angleOffset = 0.4 + Math.random() * 0.3;
-                    branch(endX, endY, newLen, ang + angleOffset, depth + 1);
-                    branch(endX, endY, newLen, ang - angleOffset, depth + 1);
-                    // occasional extra branch
-                    if (Math.random() > 0.6) {
-                        branch(endX, endY, newLen * 0.8, ang + (Math.random() - 0.5) * 0.8, depth + 2);
-                    }
-                }
-
-                branch(startX, startY, length, angle, 0);
-            }
-
-            window.addEventListener('resize', resizeTree);
-            // Initial draw after a small delay to ensure container is rendered
-            setTimeout(resizeTree, 100);
-        })();
-    </script>
-
-    <!-- 3. Skill Graph (D3.js force‑directed) -->
-    <script>
-        (function() {
-            // Skill nodes and edges
-            const nodes = [
-                { id: "Python", group: 1 },
-                { id: "C", group: 1 },
-                { id: "GoLang", group: 1 },
-                { id: "JavaScript", group: 1 },
-                { id: "Java", group: 1 },
-                { id: "HTML/CSS", group: 1 },
-                { id: "Machine Learning", group: 2 },
-                { id: "AI", group: 2 },
-                { id: "Deep Learning", group: 2 },
-                { id: "Leadership", group: 3 },
-                { id: "International Affairs", group: 3 },
-                { id: "Public Affairs", group: 3 },
-                { id: "Communication", group: 3 }
-            ];
-
-            const links = [
-                { source: "Python", target: "Machine Learning" },
-                { source: "Python", target: "AI" },
-                { source: "Python", target: "Deep Learning" },
-                { source: "Python", target: "JavaScript" },
-                { source: "C", target: "GoLang" },
-                { source: "C", target: "Java" },
-                { source: "JavaScript", target: "HTML/CSS" },
-                { source: "Machine Learning", target: "AI" },
-                { source: "AI", target: "Deep Learning" },
-                { source: "Leadership", target: "International Affairs" },
-                { source: "Leadership", target: "Public Affairs" },
-                { source: "Leadership", target: "Communication" },
-                { source: "International Affairs", target: "Public Affairs" },
-                { source: "Deep Learning", target: "Python" },
-                { source: "GoLang", target: "Python" },
-                { source: "Java", target: "C" },
-                { source: "HTML/CSS", target: "JavaScript" },
-                { source: "Communication", target: "Public Affairs" }
-            ];
-
-            const container = document.getElementById('skill-graph-container');
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-
-            const svg = d3.select(container)
-                .append('svg')
-                .attr('width', width)
-                .attr('height', height)
-                .call(d3.zoom().on('zoom', (event) => {
-                    g.attr('transform', event.transform);
-                }))
-                .append('g');
-
-            const tooltip = d3.select('body').append('div')
-                .attr('class', 'graph-tooltip');
-
-            const simulation = d3.forceSimulation(nodes)
-                .force('link', d3.forceLink(links).id(d => d.id).distance(120))
-                .force('charge', d3.forceManyBody().strength(-400))
-                .force('center', d3.forceCenter(width / 2, height / 2))
-                .force('collision', d3.forceCollide().radius(40));
-
-            // Draw links
-            const link = g.append('g')
-                .selectAll('line')
-                .data(links)
-                .enter().append('line')
-                .attr('stroke', '#2a5a3a')
-                .attr('stroke-opacity', 0.4)
-                .attr('stroke-width', 2);
+            });
 
             // Draw nodes
-            const node = g.append('g')
-                .selectAll('circle')
-                .data(nodes)
-                .enter().append('circle')
-                .attr('r', 18)
-                .attr('fill', '#1a7a3a')
-                .attr('stroke', '#1DA1F2')
-                .attr('stroke-width', 2)
-                .call(d3.drag()
-                    .on('start', dragstarted)
-                    .on('drag', dragged)
-                    .on('end', dragended))
-                .on('click', (event, d) => highlightConnections(d))
-                .on('mouseover', (event, d) => {
-                    tooltip.style('opacity', 1)
-                        .html(`<strong>${d.id}</strong>`)
-                        .style('left', (event.pageX + 10) + 'px')
-                        .style('top', (event.pageY - 20) + 'px');
-                })
-                .on('mouseout', () => {
-                    tooltip.style('opacity', 0);
-                });
+            nodes.forEach(n => {
+                const isConnected = selectedNode && (n.id === selectedNode.id || connectedSet.has(n.id));
+                const isDimmed = selectedNode && !isConnected;
 
-            // Labels
-            const label = g.append('g')
-                .selectAll('text')
-                .data(nodes)
-                .enter().append('text')
-                .attr('dy', '.35em')
-                .attr('text-anchor', 'middle')
-                .text(d => d.id)
-                .attr('fill', 'white')
-                .attr('font-size', '10px')
-                .attr('font-weight', 'bold')
-                .style('pointer-events', 'none');
+                const color = getCategoryColor(n.category);
+                const glow = getCategoryGlow(n.category);
+                const baseRadius = n.radius;
+                const pulseRadius = baseRadius + Math.sin(n.pulse) * 2;
+                const displayRadius = isConnected && n.id === selectedNode.id ? pulseRadius + 4 : pulseRadius;
 
-            // Simulation tick
-            simulation.on('tick', () => {
-                link
-                    .attr('x1', d => d.source.x)
-                    .attr('y1', d => d.source.y)
-                    .attr('x2', d => d.target.x)
-                    .attr('y2', d => d.target.y);
+                // Glow
+                if (!isDimmed) {
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, displayRadius + 8, 0, Math.PI * 2);
+                    ctx.fillStyle = glow;
+                    ctx.fill();
+                }
 
-                node
-                    .attr('cx', d => d.x)
-                    .attr('cy', d => d.y);
+                // Node
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, displayRadius, 0, Math.PI * 2);
+                ctx.fillStyle = isDimmed ? 'rgba(255,255,255,0.1)' : color;
+                ctx.fill();
 
-                label
-                    .attr('x', d => d.x)
-                    .attr('y', d => d.y + 4);
+                // Inner white dot
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, displayRadius * 0.4, 0, Math.PI * 2);
+                ctx.fillStyle = isDimmed ? 'rgba(255,255,255,0.1)' : '#fff';
+                ctx.fill();
+
+                // Label
+                if (!isDimmed || n.hovered) {
+                    ctx.font = n.hovered || isConnected ? '500 13px "JetBrains Mono", monospace' : '400 11px "JetBrains Mono", monospace';
+                    ctx.fillStyle = isDimmed ? 'rgba(255,255,255,0.2)' : '#fff';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(n.label, n.x, n.y + displayRadius + 18);
+                }
+            });
+        }
+
+        function animateSkills() {
+            updatePhysics();
+            draw();
+            requestAnimationFrame(animateSkills);
+        }
+        animateSkills();
+
+        // Mouse interactions
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+
+            let hovered = null;
+            nodes.forEach(n => {
+                const dx = mx - n.x;
+                const dy = my - n.y;
+                n.hovered = Math.sqrt(dx * dx + dy * dy) < n.radius + 10;
+                if (n.hovered) hovered = n;
             });
 
-            // Drag functions
-            function dragstarted(event, d) {
-                if (!event.active) simulation.alphaTarget(0.3).restart();
-                d.fx = d.x;
-                d.fy = d.y;
-            }
-            function dragged(event, d) {
-                d.fx = event.x;
-                d.fy = event.y;
-            }
-            function dragended(event, d) {
-                if (!event.active) simulation.alphaTarget(0);
-                d.fx = null;
-                d.fy = null;
+            canvas.style.cursor = hovered ? 'pointer' : (isDragging ? 'grabbing' : 'grab');
+
+            if (hovered) {
+                const connected = getConnected(hovered.id);
+                tooltipTitle.textContent = hovered.label;
+                tooltipConnections.textContent = `Connected to: ${Array.from(connected).map(id => nodes.find(n => n.id === id)?.label).filter(Boolean).join(', ') || 'None'}`;
+                tooltip.style.left = (e.clientX - rect.left + 15) + 'px';
+                tooltip.style.top = (e.clientY - rect.top - 10) + 'px';
+                tooltip.classList.add('visible');
+            } else {
+                tooltip.classList.remove('visible');
             }
 
-            // Highlight connections on click
-            function highlightConnections(clicked) {
-                // Reset
-                node.attr('fill', '#1a7a3a').attr('stroke', '#1DA1F2').attr('stroke-width', 2);
-                link.attr('stroke-opacity', 0.2).attr('stroke', '#2a5a3a');
-
-                // Highlight clicked node
-                node.filter(d => d.id === clicked.id)
-                    .attr('fill', '#1DA1F2').attr('stroke', 'white').attr('stroke-width', 3);
-
-                // Find connected links and highlight them
-                const connected = links.filter(l => l.source.id === clicked.id || l.target.id === clicked.id);
-                connected.forEach(l => {
-                    link.filter(d => d === l)
-                        .attr('stroke-opacity', 0.9)
-                        .attr('stroke', '#1DA1F2');
-                    // Highlight neighbor
-                    const neighborId = (l.source.id === clicked.id) ? l.target.id : l.source.id;
-                    node.filter(d => d.id === neighborId)
-                        .attr('fill', '#88d0f0').attr('stroke', '#1DA1F2');
-                });
+            if (isDragging && dragNode) {
+                dragNode.x = mx;
+                dragNode.y = my;
+                dragNode.vx = 0;
+                dragNode.vy = 0;
             }
-
-            // Resize handler
-            window.addEventListener('resize', () => {
-                const w = container.clientWidth;
-                const h = container.clientHeight;
-                svg.attr('width', w).attr('height', h);
-                simulation.force('center', d3.forceCenter(w / 2, h / 2));
-                simulation.alpha(0.3).restart();
-            });
-        })();
-    </script>
-
-    <!-- 4. Active nav highlight and smooth scroll -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const sections = document.querySelectorAll('section[id]');
-            const navLinks = document.querySelectorAll('.sidebar nav a');
-
-            window.addEventListener('scroll', () => {
-                let current = '';
-                sections.forEach(section => {
-                    const top = section.offsetTop - 120;
-                    if (window.scrollY >= top) {
-                        current = section.getAttribute('id');
-                    }
-                });
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === '#' + current) {
-                        link.classList.add('active');
-                    }
-                });
-            });
-
-            // Smooth scroll for nav links
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = link.getAttribute('href').substring(1);
-                    const target = document.getElementById(targetId);
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
-            });
         });
+
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+
+            const clicked = nodes.find(n => {
+                const dx = mx - n.x;
+                const dy = my - n.y;
+                return Math.sqrt(dx * dx + dy * dy) < n.radius + 10;
+            });
+
+            if (clicked) {
+                selectedNode = selectedNode === clicked ? null : clicked;
+                isDragging = true;
+                dragNode = clicked;
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            dragNode = null;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            tooltip.classList.remove('visible');
+            isDragging = false;
+            dragNode = null;
+        });
+    })();
+
+    // ═══════════════════════════════════════════════════════════
+    // 3. CHERRY BLOSSOM TREE — Recursive Fractal with Particles
+    // ═══════════════════════════════════════════════════════════
+    (function() {
+        const canvas = document.getElementById('sakura-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // High DPI support
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
+
+        const W = rect.width;
+        const H = rect.height;
+
+        let petals = [];
+        let wind = 0;
+        let time = 0;
+
+        class Petal {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 1.5;
+                this.vy = Math.random() * 0.8 + 0.3;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotSpeed = (Math.random() - 0.5) * 0.05;
+                this.size = Math.random() * 4 + 3;
+                this.opacity = Math.random() * 0.6 + 0.4;
+                this.life = 1;
+            }
+
+            update() {
+                this.x += this.vx + Math.sin(time * 0.01 + this.y * 0.01) * 0.5;
+                this.y += this.vy;
+                this.rotation += this.rotSpeed;
+                this.vx += Math.sin(time * 0.02) * 0.01;
+                this.life -= 0.002;
+            }
+
+            draw() {
+                if (this.life <= 0) return;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.opacity * this.life;
+
+                // Draw petal shape
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size);
+                ctx.bezierCurveTo(this.size * 0.6, -this.size * 0.3, this.size * 0.6, this.size * 0.3, 0, this.size);
+                ctx.bezierCurveTo(-this.size * 0.6, this.size * 0.3, -this.size * 0.6, -this.size * 0.3, 0, -this.size);
+                ctx.fillStyle = '#ffb7c5';
+                ctx.fill();
+
+                // Petal vein
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size * 0.8);
+                ctx.lineTo(0, this.size * 0.8);
+                ctx.strokeStyle = 'rgba(255, 182, 193, 0.5)';
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+
+                ctx.restore();
+            }
+        }
+
+        function drawBranch(x, y, length, angle, depth, maxDepth) {
+            if (depth === 0) {
+                // Draw flower cluster at tip
+                const flowerCount = Math.floor(Math.random() * 3) + 2;
+                for (let i = 0; i < flowerCount; i++) {
+                    const fx = x + (Math.random() - 0.5) * 12;
+                    const fy = y + (Math.random() - 0.5) * 12;
+
+                    ctx.beginPath();
+                    ctx.arc(fx, fy, 4 + Math.random() * 3, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 183, 197, ${0.6 + Math.random() * 0.4})`;
+                    ctx.fill();
+
+                    // Occasionally spawn falling petal
+                    if (Math.random() < 0.02) {
+                        petals.push(new Petal(fx, fy));
+                    }
+                }
+                return;
+            }
+
+            const endX = x + Math.cos(angle) * length;
+            const endY = y + Math.sin(angle) * length;
+
+            // Branch color transitions from dark to lighter
+            const t = depth / maxDepth;
+            const r = Math.floor(40 + t * 40);
+            const g = Math.floor(30 + t * 20);
+            const b = Math.floor(30 + t * 20);
+            const branchWidth = (depth / maxDepth) * 4 + 0.5;
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = `rgb(${r}, ${g}, ${b})`;
+            ctx.lineWidth = branchWidth;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // Sub-branches
+            const subLength = length * 0.75;
+            const spread = 0.4 + Math.random() * 0.3;
+
+            drawBranch(endX, endY, subLength, angle - spread, depth - 1, maxDepth);
+            drawBranch(endX, endY, subLength, angle + spread, depth - 1, maxDepth);
+
+            // Occasional third branch
+            if (Math.random() < 0.3 && depth > 2) {
+                drawBranch(endX, endY, subLength * 0.7, angle + (Math.random() - 0.5) * 0.5, depth - 1, maxDepth);
+            }
+        }
+
+        function animateSakura() {
+            ctx.clearRect(0, 0, W, H);
+            time++;
+
+            // Background subtle gradient
+            const gradient = ctx.createRadialGradient(W/2, H, 0, W/2, H/2, W);
+            gradient.addColorStop(0, '#111111');
+            gradient.addColorStop(1, '#0a0a0a');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, W, H);
+
+            // Draw tree
+            ctx.save();
+            drawBranch(W / 2, H - 20, H * 0.18, -Math.PI / 2, 10, 10);
+            ctx.restore();
+
+            // Update and draw petals
+            petals = petals.filter(p => {
+                p.update();
+                p.draw();
+                return p.life > 0 && p.y < H + 10;
+            });
+
+            // Ground shadow
+            ctx.beginPath();
+            ctx.ellipse(W / 2, H - 5, 80, 10, 0, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 183, 197, 0.05)';
+            ctx.fill();
+
+            requestAnimationFrame(animateSakura);
+        }
+
+        animateSakura();
+    })();
+
+    // ═══════════════════════════════════════════════════════════
+    // 4. SMOOTH SCROLL
+    // ═══════════════════════════════════════════════════════════
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // ═══════════════════════════════════════════════════════════
+    // 5. NAV BACKGROUND ON SCROLL
+    // ═══════════════════════════════════════════════════════════
+    window.addEventListener('scroll', () => {
+        const nav = document.querySelector('.nav-bar');
+        if (window.scrollY > 50) {
+            nav.style.background = 'rgba(10, 10, 10, 0.95)';
+        } else {
+            nav.style.background = 'rgba(10, 10, 10, 0.85)';
+        }
+    });
     </script>
+
 </body>
-</html>
+</html>                                             ctx.fillStyle = `hsla(${hue}, 80%, 70%, 0.5)`;
+                                                    
